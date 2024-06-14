@@ -10,8 +10,23 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  var _isLogin = true;
 
+  final _formKey = GlobalKey<FormState>();
+
+  var _isLogin = true;
+  var _enteredEmail = '';
+  var _enteredPassword = '';
+
+  void _submit(){
+    final isValid = _formKey.currentState!.validate(); // returns true/false
+  
+    if(isValid){
+      _formKey.currentState!.save();
+      print(_enteredEmail);
+      print(_enteredPassword);
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +54,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Form(
+                      key: _formKey,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -50,6 +66,20 @@ class _AuthScreenState extends State<AuthScreen> {
                             autocorrect: false, // turn of auto correction
                             textCapitalization: TextCapitalization
                                 .none, // first character wont be upper case when entering email address
+                            validator: (value) {
+                              // Validation for email address
+                              if (value == null ||
+                                  value.trim().isEmpty ||
+                                  !value.contains('@')) {
+                                return 'Please enter a valid email address.';
+                              }
+
+                              return null;
+                            },
+                            onSaved: (value){
+                              // value wont be null for sure here because of the validators
+                              _enteredEmail = value!;
+                            },
                           ),
                           TextFormField(
                             decoration: const InputDecoration(
@@ -57,20 +87,35 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                             obscureText:
                                 true, // hides the characters as they are being entered
+                            validator: (value) {
+                              // Validation for password
+                              if (value == null || value.trim().length < 6) {
+                                return 'Password must be at least 6 characters.';
+                              }
+
+                              return null;
+                            },
+                            onSaved: (value){
+                              // value wont be null for sure here because of the validators
+                              _enteredPassword = value!;
+                            },
                           ),
                           const SizedBox(height: 12),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                             ),
-                            child:  Text(_isLogin ? 'Login': 'Signup'),
+                            child: Text(_isLogin ? 'Login' : 'Signup'),
                           ),
                           TextButton(
                             // allows users to switch between login and register
                             onPressed: () {
                               setState(() {
-                                _isLogin = !_isLogin; // sets the _isLogin to the oposite if its true, it will yield false etc..
+                                _isLogin =
+                                    !_isLogin; // sets the _isLogin to the oposite if its true, it will yield false etc..
                               });
                             },
                             child: Text(_isLogin
