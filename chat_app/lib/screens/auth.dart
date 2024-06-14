@@ -28,17 +28,23 @@ class _AuthScreenState extends State<AuthScreen> {
     }
     _formKey.currentState!.save();
 
+  try {
+    // *** login ***
     if (_isLogin) {
-      // log users in
+      final userLoginCredentials = await _firebase.signInWithEmailAndPassword(
+        email: _enteredEmail,
+        password: _enteredPassword,
+      );
+      print(userLoginCredentials);
     } else {
-      // ***signup users ***
-      try {
+      // ***signup users *** 
         final userCredentials = await _firebase.createUserWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword,
         );
         print(userCredentials);
-      } on FirebaseAuthException catch (error) {
+      }
+  } on FirebaseAuthException catch (error) {
         if (error.code == 'email-already-in-use') {
           // ...
         }
@@ -50,7 +56,7 @@ class _AuthScreenState extends State<AuthScreen> {
         );
       }
     }
-  }
+  
 
   @override
   Widget build(BuildContext context) {
