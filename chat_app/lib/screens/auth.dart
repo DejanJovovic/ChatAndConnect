@@ -10,6 +10,8 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  var _isLogin = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,13 +48,34 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                             keyboardType: TextInputType.emailAddress,
                             autocorrect: false, // turn of auto correction
-                            textCapitalization: TextCapitalization.none, // first character wont be upper case when entering email address
+                            textCapitalization: TextCapitalization
+                                .none, // first character wont be upper case when entering email address
                           ),
                           TextFormField(
                             decoration: const InputDecoration(
                               labelText: 'Password',
                             ),
-                            obscureText: true, // hides the characters as they are being entered
+                            obscureText:
+                                true, // hides the characters as they are being entered
+                          ),
+                          const SizedBox(height: 12),
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                            ),
+                            child:  Text(_isLogin ? 'Login': 'Signup'),
+                          ),
+                          TextButton(
+                            // allows users to switch between login and register
+                            onPressed: () {
+                              setState(() {
+                                _isLogin = !_isLogin; // sets the _isLogin to the oposite if its true, it will yield false etc..
+                              });
+                            },
+                            child: Text(_isLogin
+                                ? 'Create an account'
+                                : 'I already have an account'),
                           ),
                         ],
                       ),
