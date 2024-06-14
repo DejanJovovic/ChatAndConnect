@@ -1,3 +1,4 @@
+import 'package:chat_app/widgets/user_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -28,35 +29,34 @@ class _AuthScreenState extends State<AuthScreen> {
     }
     _formKey.currentState!.save();
 
-  try {
-    // *** login ***
-    if (_isLogin) {
-      final userLoginCredentials = await _firebase.signInWithEmailAndPassword(
-        email: _enteredEmail,
-        password: _enteredPassword,
-      );
-      print(userLoginCredentials);
-    } else {
-      // ***signup users *** 
+    try {
+      // *** login ***
+      if (_isLogin) {
+        final userLoginCredentials = await _firebase.signInWithEmailAndPassword(
+          email: _enteredEmail,
+          password: _enteredPassword,
+        );
+        print(userLoginCredentials);
+      } else {
+        // ***signup users ***
         final userCredentials = await _firebase.createUserWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword,
         );
         print(userCredentials);
       }
-  } on FirebaseAuthException catch (error) {
-        if (error.code == 'email-already-in-use') {
-          // ...
-        }
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(error.message ?? 'Authentication failed.'),
-          ),
-        );
+    } on FirebaseAuthException catch (error) {
+      if (error.code == 'email-already-in-use') {
+        // ...
       }
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.message ?? 'Authentication failed.'),
+        ),
+      );
     }
-  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +89,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          // if its not logging
+                          if (!_isLogin) UserImagePicker(),
                           TextFormField(
                             decoration: const InputDecoration(
                               labelText: 'Email Address',
