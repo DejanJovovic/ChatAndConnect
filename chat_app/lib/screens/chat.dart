@@ -19,6 +19,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
     await fcm.requestPermission();
 
+
+   // fcm.subscribeToTopic('chat'); -- this sends the message to all users who sent a message on the app
+
     final token = await fcm.getToken();
     print(token); // this token could be sent to Firestore too
 
